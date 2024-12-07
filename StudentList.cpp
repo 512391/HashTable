@@ -2,7 +2,6 @@
 #include <cstring>
 #include <vector>
 #include <iomanip>
-#include "Node.h"
 #include "StudentGenerator.h"
 /*
   Author: Jay Williamson
@@ -37,6 +36,9 @@ void printNames(Node* head)
   //checks if it should get the next student if there is one
   if(head->getNext() != nullptr)
     {
+      cout << endl;
+      cout << "COLLISION" << endl;
+      cout << endl;
       //if there is one it prints the next persons stuff
       printNames(head->getNext());
     }
@@ -124,18 +126,92 @@ void addNode(Node* head, Node* toAdd)
     }
 }
 
+int checkAmountOfElementsInLinkedList(Node* node, int amountSoFar)
+{
+  cout << "checking amount of elements in linked list" << endl;
+  if(node == nullptr)
+    {
+      return 0;
+    }
+  if(node->getNext() == nullptr)
+    {
+      return amountSoFar+1;
+    }
+  else
+    {
+      checkAmountOfElementsInLinkedList(node->getNext(), amountSoFar+1);
+    }
+}
+
+bool checkIfShouldReorganize(Node** hashTable, int hashTableMax)
+{
+  for(int i = 0; i < hashTableMax; i++)
+          {
+	    cout << "checking at index: " << i << " has: " << checkAmountOfElementsInLinkedList(hashTable[i], 0) << endl;
+            if(checkAmountOfElementsInLinkedList(hashTable[i], 0) >= 3)
+              {
+                return true;
+              }
+          }
+return false;
+}
+
+Node** reorganizeHashTable(Node** hashTable, StudentGenerator sg, int oldSize, int newSize)
+{
+  Node** tempHashTable = new Node*[newSize];
+
+  cout << "made temp hash table" << endl;
+
+  int amountOfStudents = 0;
+  
+  for(int i = 0; i < oldSize; i++)
+    {
+	  Node* st = hashTable[i];
+	  cout << "reorganizing at index: " << i << endl;
+  
+	  while(st != nullptr)
+	    {
+	      amountOfStudents++;
+	      cout << "pre hash" << endl;
+	      int hash = sg.hashStudent(st->getStudent(), newSize);
+	      cout << "before hashing into new table at hash: " << hash << endl;
+              if(tempHashTable[hash] == nullptr)
+                {
+                  tempHashTable[hash] = st;
+                }
+              else
+                {
+                  addNode(tempHashTable[hash], st);
+		}
+	      cout << "hashed into new table" << endl;
+	      Node* tempSt = st;
+	      st = st->getNext();
+	      tempSt->setNext(nullptr);
+	    }
+	  cout << endl;
+	  cout << endl;
+	  cout << "The amount of students: "<< amountOfStudents << endl;
+	  cout << endl;
+
+    }
+
+  return tempHashTable;
+}
+
 int main()
 {
   StudentGenerator sg;
   Node** hashTable = nullptr;
 
   hashTable = new Node*[100];
-
+  int hashTableMax = 100;
+  
   //the input
-  int input = 0;
+  char input[7] = {' ', ' ', ' ', ' ', ' ', ' ', ' '};
+  const char emptyInput[7] = {' ', ' ', ' ', ' ', ' ', ' ', ' '};
 
   //gets initial input
-  cout << "Amount of students to add \n";
+  cout << "Enter one of the following inputs, PRINT. ADD, DELETE, or QUIT \n";
   cin >> input;
 
 //checks if it should quit and end
@@ -144,25 +220,58 @@ int main()
       //Checks if it is adding a student
       if(strncmp(input, "ADD", 3) == 0)
 	{
-	  RandomStudents* rs = sg.makeStudents(input);
-	  for(int i = 0; i < input; i++)
-	    {
-	  Node* st = rs->nodes[i];
+	  int amountOfStudents = 0;
 
-	  //adds the student that was made to the linkedList
-	    if(hashTable[sg.hashStudent(st->data, input-1)] == nullptr)
-	     {
-	        hashTable[sg,hashStudent(st->data, input-1)] = st;
-	     }
-	     else
-	     {
-	        addNode(hashTable[sg,hashStudent(st->data, input-1)], st);
-	     }
+          //gets initial input
+          cout << "Amount of students to add \n";
+          cin >> amountOfStudents;
+
+	  RandomStudents* rs = sg.makeStudents(amountOfStudents);
+	  for(int i = 0; i < amountOfStudents; i++)
+	    {
+	      Node* st = rs->nodes[i];
+
+	      //adds the student that was made to the linkedList
+	      if(hashTable[sg.hashStudent(st->getStudent(), hashTableMax)] == nullptr)
+		{
+		  hashTable[sg.hashStudent(st->getStudent(), hashTableMax)] = st;
+		}
+	      else
+		{
+		  addNode(hashTable[sg.hashStudent(st->getStudent(), hashTableMax)], st);
+		}
+	    }
+
+	  for(int i = 0; i < hashTableMax; i++)
+            {
+              cout << "hash: " << i << endl;
+
+              printNames(hashTable[i]);
+            }
+
+	  
+	  while(checkIfShouldReorganize(hashTable, hashTableMax))
+	    {
+	      cout << "reorganizing" << endl;
+	      hashTable = reorganizeHashTable(hashTable, sg, hashTableMax, hashTableMax*2);
+	      hashTableMax = hashTableMax*2;
+	      for(int i = 0; i < hashTableMax; i++)
+		{
+                   cout << "hash: " << i << endl;
+
+                   printNames(hashTable[i]);
+		}
+
 	    }
 	}//Checks if it should print the students
       else if(strncmp(input, "PRINT", 5) == 0)
 	{
-	  printNames(head);
+	  for(int i = 0; i < hashTableMax; i++)
+	    {
+	      cout << "hash: " << i << endl;
+	      
+	      printNames(hashTable[i]);
+	    }
 	}//Checks if it should delete a student
       else if(strncmp(input, "DELETE", 6) == 0)
 	{
@@ -171,7 +280,10 @@ int main()
 	  cout << "Enter an ID to delete \n";
 	  cin >> id;
 
-	  head = deleteName(head, head, nullptr, id);
+	  for(int i = 0; i < hashTableMax; i++)
+	    {
+	      hashTable[i] = deleteName(hashTable[i], hashTable[i], nullptr, id);
+	    }
 	}
 
       //clears the input array

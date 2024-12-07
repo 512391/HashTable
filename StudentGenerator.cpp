@@ -2,7 +2,7 @@
 #include"StudentGenerator.h"
 #include<cstdlib>
 #include<cstring>
-
+#include<ctime>
 using namespace std;
 using namespace LinkedList;
 using namespace StudentTools;
@@ -14,16 +14,19 @@ RandomStudents::RandomStudents(int amount)
 
 RandomStudents* StudentGenerator::makeStudents(int amount)
 {
+  srand(time(0));
+  
   RandomStudents* randomStudents = new RandomStudents(amount);
 
   for(int i = 0; i < amount; i++)
     {
-      int firstNameLength = rand() % 21;
-      int secondNameLength = rand() % 21;
+      int firstNameLength = rand() % 20 + 1;
+      int secondNameLength = rand() % 20 + 1;
        char firstName[20] = {};
        char lastName[20] = {};
-       float GPA = static_cast<float>((rand() % 401)/100);
-       int id = rand() % 101;
+       float GPA = (float)(rand()) / (float)(4.00f);
+       int id = rand() % 100 + 1;
+       int randomSeed = rand() % 100 + 47;
 
        for(int j = 0; j < firstNameLength; j++)
 	 {
@@ -45,6 +48,7 @@ RandomStudents* StudentGenerator::makeStudents(int amount)
        newStudent->id = id;
        newStudent->lastNameLength = secondNameLength;
        newStudent->firstNameLength = firstNameLength;
+       newStudent->randomSeed = randomSeed;
 
        randomStudents->nodes[i] = new Node(newStudent);
     }
@@ -53,6 +57,6 @@ RandomStudents* StudentGenerator::makeStudents(int amount)
 
 int StudentGenerator::hashStudent(Student* student, int maxNum)
 {
-  int hash = static_cast<int>(student->id * (student->GPA*100) * (student->lastNameLength+student->firstNameLength)) % (maxNum+1);
+  int hash = static_cast<int>(student->id * student->randomSeed * (student->lastNameLength*student->firstNameLength)) % (maxNum+1);
   return hash;
 }

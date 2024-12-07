@@ -11,6 +11,7 @@ namespace StudentTools
     int id;
     int lastNameLength;
     int firstNameLength;
+    int randomSeed;
     Student();
   };
 }
