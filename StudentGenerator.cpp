@@ -24,7 +24,7 @@ RandomStudents* StudentGenerator::makeStudents(int amount)
       int secondNameLength = rand() % 20 + 1;
        char firstName[20] = {};
        char lastName[20] = {};
-       float GPA = (float)(rand()) / (float)(4.00f);
+       float GPA = (float)(rand()%4);
        int id = rand() % 100 + 1;
        int randomSeed = rand() % 100 + 47;
 

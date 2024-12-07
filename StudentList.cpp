@@ -20,7 +20,7 @@ void printNames(Node* head)
   //checks if there is a list at all
   if(head == nullptr)
     {
-      cout << "list empty \n";
+      //cout << "list empty \n";
       return;
     }
 
@@ -195,6 +195,8 @@ Node** reorganizeHashTable(Node** hashTable, StudentGenerator sg, int oldSize, i
 
     }
 
+  delete hashTable;
+
   return tempHashTable;
 }
 
@@ -257,7 +259,7 @@ int main()
 	      hashTableMax = hashTableMax*2;
 	      for(int i = 0; i < hashTableMax; i++)
 		{
-                   cout << "hash: " << i << endl;
+                  cout << "hash: " << i << endl;
 
                    printNames(hashTable[i]);
 		}
