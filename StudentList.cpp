@@ -113,15 +113,24 @@ Node* deleteName(Node* newHead, Node* head, Node* previous, int toDelete)
 //this adds a node to the linked list
 void addNode(Node* head, Node* toAdd)
 {
+  cout << "adding node \n";
+
+  if(head == nullptr)
+    {
+      cout << "head null";
+    }
   //if it is at the end of the list it sets the toAdd to the end of the list
   if(head->getNext() == nullptr)
     {
+      cout << "setting next \n";
+      
       //sets the toAdd tot he end of the list
       head->setNext(toAdd);
       return;
     }
   else//if it is not at the end of the list it keeps traversing to the end
     {
+      cout << "gettubg bext node \n";
       addNode(head->getNext(), toAdd);
     }
 }
@@ -233,17 +242,21 @@ int main()
 	    {
 	      Node* st = rs->nodes[i];
 
+	      cout << "about to assign students to table \n";
 	      //adds the student that was made to the linkedList
-	      if(hashTable[sg.hashStudent(st->getStudent(), hashTableMax)] == nullptr)
+	      int hash = sg.hashStudent(st->getStudent(), hashTableMax);
+	      if(hashTable[hash] == nullptr)
 		{
-		  hashTable[sg.hashStudent(st->getStudent(), hashTableMax)] = st;
+		  cout << hash << "passed if top \n";
+		  hashTable[hash] = st;
 		}
 	      else
 		{
-		  addNode(hashTable[sg.hashStudent(st->getStudent(), hashTableMax)], st);
+		  cout << hash << "passed if bottom \n";
+		  addNode(hashTable[hash], st);
 		}
 	    }
-
+	  cout << "passed assigning them into the table \n";
 	  for(int i = 0; i < hashTableMax; i++)
             {
               cout << "hash: " << i << endl;
