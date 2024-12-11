@@ -20,7 +20,6 @@ void printNames(Node* head)
   //checks if there is a list at all
   if(head == nullptr)
     {
-      //cout << "list empty \n";
       return;
     }
 
@@ -28,10 +27,13 @@ void printNames(Node* head)
   Student* currentStudent = head->getStudent();
 
   //outputs the stuff
-  cout << "ID: " << currentStudent->id << "\n";
-  cout << "GPA: " << currentStudent->GPA << "\n";
-  cout << "First Name: " << currentStudent->firstName << "\n";
-  cout << "Last name: " << currentStudent->lastName << "\n";
+  cout << "ID: " << currentStudent->id << endl;
+  
+  cout << "GPA: " << currentStudent->GPA << endl;
+  
+  cout << "First Name: " << currentStudent->firstName << endl;
+ 
+  cout << "Last name: " << currentStudent->lastName << endl;
 
   //checks if it should get the next student if there is one
   if(head->getNext() != nullptr)
@@ -57,7 +59,6 @@ Node* deleteName(Node* newHead, Node* head, Node* previous, int toDelete)
   if(newHead == nullptr)
     {
       //gets out if there is no list
-      cout << "There is no list to delete from \n";
       return newHead;
     }
 
@@ -113,8 +114,6 @@ Node* deleteName(Node* newHead, Node* head, Node* previous, int toDelete)
 //this adds a node to the linked list
 void addNode(Node* head, Node* toAdd)
 {
-  cout << "adding node \n";
-
   if(head == nullptr)
     {
       cout << "head null";
@@ -122,22 +121,18 @@ void addNode(Node* head, Node* toAdd)
   //if it is at the end of the list it sets the toAdd to the end of the list
   if(head->getNext() == nullptr)
     {
-      cout << "setting next \n";
-      
       //sets the toAdd tot he end of the list
       head->setNext(toAdd);
       return;
     }
   else//if it is not at the end of the list it keeps traversing to the end
     {
-      cout << "gettubg bext node \n";
       addNode(head->getNext(), toAdd);
     }
 }
 
 int checkAmountOfElementsInLinkedList(Node* node, int amountSoFar)
 {
-  cout << "checking amount of elements in linked list" << endl;
   if(node == nullptr)
     {
       return 0;
@@ -154,14 +149,23 @@ int checkAmountOfElementsInLinkedList(Node* node, int amountSoFar)
 
 bool checkIfShouldReorganize(Node** hashTable, int hashTableMax)
 {
+  int amountOfNodes = 0;
+  
   for(int i = 0; i < hashTableMax; i++)
           {
-	    cout << "checking at index: " << i << " has: " << checkAmountOfElementsInLinkedList(hashTable[i], 0) << endl;
             if(checkAmountOfElementsInLinkedList(hashTable[i], 0) >= 3)
               {
                 return true;
               }
+	    else
+	      {
+		amountOfNodes += checkAmountOfElementsInLinkedList(hashTable[i], 0);
+	      }
           }
+  if(amountOfNodes >= (hashTableMax/2))
+    {
+      return true;
+    }
 return false;
 }
 
@@ -169,21 +173,22 @@ Node** reorganizeHashTable(Node** hashTable, StudentGenerator sg, int oldSize, i
 {
   Node** tempHashTable = new Node*[newSize];
 
-  cout << "made temp hash table" << endl;
+  for(int i = 0; i < newSize; i++)
+    {
+      tempHashTable[i] = nullptr;
+    }
 
   int amountOfStudents = 0;
   
   for(int i = 0; i < oldSize; i++)
     {
 	  Node* st = hashTable[i];
-	  cout << "reorganizing at index: " << i << endl;
   
 	  while(st != nullptr)
 	    {
 	      amountOfStudents++;
-	      cout << "pre hash" << endl;
 	      int hash = sg.hashStudent(st->getStudent(), newSize);
-	      cout << "before hashing into new table at hash: " << hash << endl;
+   
               if(tempHashTable[hash] == nullptr)
                 {
                   tempHashTable[hash] = st;
@@ -192,16 +197,11 @@ Node** reorganizeHashTable(Node** hashTable, StudentGenerator sg, int oldSize, i
                 {
                   addNode(tempHashTable[hash], st);
 		}
-	      cout << "hashed into new table" << endl;
+ 
 	      Node* tempSt = st;
 	      st = st->getNext();
 	      tempSt->setNext(nullptr);
 	    }
-	  cout << endl;
-	  cout << endl;
-	  cout << "The amount of students: "<< amountOfStudents << endl;
-	  cout << endl;
-
     }
 
   delete hashTable;
@@ -216,6 +216,11 @@ int main()
 
   hashTable = new Node*[100];
   int hashTableMax = 100;
+
+  for(int i = 0; i < hashTableMax; i++)
+    {
+      hashTable[i] = nullptr;
+    }
   
   //the input
   char input[7] = {' ', ' ', ' ', ' ', ' ', ' ', ' '};
@@ -233,50 +238,31 @@ int main()
 	{
 	  int amountOfStudents = 0;
 
-          //gets initial input
-          cout << "Amount of students to add \n";
-          cin >> amountOfStudents;
-
+	  cout << "How many would you like to add: \n";
+	  cin >> amountOfStudents;
+	  
 	  RandomStudents* rs = sg.makeStudents(amountOfStudents);
 	  for(int i = 0; i < amountOfStudents; i++)
 	    {
 	      Node* st = rs->nodes[i];
 
-	      cout << "about to assign students to table \n";
 	      //adds the student that was made to the linkedList
 	      int hash = sg.hashStudent(st->getStudent(), hashTableMax);
 	      if(hashTable[hash] == nullptr)
 		{
-		  cout << hash << "passed if top \n";
 		  hashTable[hash] = st;
 		}
 	      else
 		{
-		  cout << hash << "passed if bottom \n";
 		  addNode(hashTable[hash], st);
 		}
 	    }
-	  cout << "passed assigning them into the table \n";
-	  for(int i = 0; i < hashTableMax; i++)
-            {
-              cout << "hash: " << i << endl;
-
-              printNames(hashTable[i]);
-            }
 
 	  
 	  while(checkIfShouldReorganize(hashTable, hashTableMax))
 	    {
-	      cout << "reorganizing" << endl;
 	      hashTable = reorganizeHashTable(hashTable, sg, hashTableMax, hashTableMax*2);
 	      hashTableMax = hashTableMax*2;
-	      for(int i = 0; i < hashTableMax; i++)
-		{
-                  cout << "hash: " << i << endl;
-
-                   printNames(hashTable[i]);
-		}
-
 	    }
 	}//Checks if it should print the students
       else if(strncmp(input, "PRINT", 5) == 0)

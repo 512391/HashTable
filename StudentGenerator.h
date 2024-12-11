@@ -20,7 +20,7 @@ namespace StudentTools
       int hashStudent(Student* student, int maxNumx);
   private:
     int currentId;
-    char firstNames[20][20];
-    char lastNames[20][20];
+    char **firstNames = new char*[21];
+    char **lastNames = new char*[21];
   };
 }
