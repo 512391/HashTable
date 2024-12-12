@@ -20,12 +20,13 @@ StudentGenerator::StudentGenerator()
     ifstream lastNamesFile("LastNames.txt");
     StudentGenerator::currentId = 0;
 
-    for(int i =0; i < 20; i++)
+    cout << endl;
+    
+    for(int i = 0; i < 20; i++)
       {
 	StudentGenerator::firstNames[i] = new char[21];
 	StudentGenerator::lastNames[i] = new char[21];
       }
-      
     
   if(firstNamesFile.is_open())
          {
@@ -63,6 +64,23 @@ StudentGenerator::StudentGenerator()
                  }
              }
 	 }
+  for(int i = 0; i < 20; i++)
+      {
+        for(int j = 0; j < 20; j++)
+          {
+            cout << StudentGenerator::firstNames[i][j];
+          }
+        cout << endl;
+      }
+for(int i = 0; i < 20; i++)
+      {
+        for(int j = 0; j < 20; j++)
+          {
+            cout << StudentGenerator::lastNames[i][j];
+          }
+        cout << endl;
+      }
+
 }
 
 RandomStudents* StudentGenerator::makeStudents(int amount)

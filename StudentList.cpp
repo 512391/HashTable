@@ -31,7 +31,12 @@ void printNames(Node* head)
   
   cout << "GPA: " << currentStudent->GPA << endl;
   
-  cout << "First Name: " << currentStudent->firstName << endl;
+  cout << "First Name: ";
+  for(int i = 0; i < currentStudent->firstNameLength; i++)
+    {
+      cout << currentStudent->firstName[i];
+    }
+  cout << endl;
  
   cout << "Last name: " << currentStudent->lastName << endl;
 
