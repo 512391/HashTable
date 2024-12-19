@@ -2,16 +2,25 @@
 #include <fstream>
 #include"Node.h"
 
+
+/*
+  author: Jay Williamson
+  date: 12/19/2024
+  this file contains the info about the student generator
+ */
+
 using namespace LinkedList;
 
 namespace StudentTools
 {
+//random students struct
   struct RandomStudents
   {
     Node** nodes;
     RandomStudents(int amount);
   };
-    
+
+//Student generator class
   class StudentGenerator
   {
     public:
