@@ -5,8 +5,8 @@
 #include "StudentGenerator.h"
 /*
   Author: Jay Williamson
-  Date: 10/24/2024
-  This program maintains a list of students which can be added to or deleted from
+  Date: 12/19/2024
+  This program maintains a hash table of students which can be added to or deleted from
   you can also print the students and type QUIT to exit
  */
 
@@ -136,28 +136,33 @@ void addNode(Node* head, Node* toAdd)
     }
 }
 
+//this gets the amount of elements in a certain linked list
 int checkAmountOfElementsInLinkedList(Node* node, int amountSoFar)
 {
+//checks if the start if null if so it is 0 lone
   if(node == nullptr)
     {
       return 0;
-    }
+    }//if the next is null just return the amouns so far plus the current
   if(node->getNext() == nullptr)
     {
       return amountSoFar+1;
     }
-  else
+  else //if there are more call recursively
     {
       checkAmountOfElementsInLinkedList(node->getNext(), amountSoFar+1);
     }
 }
 
+//THis checks if it shoudl reorganize the hashtable
 bool checkIfShouldReorganize(Node** hashTable, int hashTableMax)
 {
   int amountOfNodes = 0;
-  
+
+//goes through the hashtable
   for(int i = 0; i < hashTableMax; i++)
           {
+	//checks if any of the lists are longer than three
             if(checkAmountOfElementsInLinkedList(hashTable[i], 0) >= 3)
               {
                 return true;
@@ -167,6 +172,7 @@ bool checkIfShouldReorganize(Node** hashTable, int hashTableMax)
 		amountOfNodes += checkAmountOfElementsInLinkedList(hashTable[i], 0);
 	      }
           }
+	//checks if over half the table is filled
   if(amountOfNodes >= (hashTableMax/2))
     {
       return true;
@@ -174,26 +180,32 @@ bool checkIfShouldReorganize(Node** hashTable, int hashTableMax)
 return false;
 }
 
+//this doubles and reorganizes the hash table
 Node** reorganizeHashTable(Node** hashTable, StudentGenerator sg, int oldSize, int newSize)
 {
+//makes a temp hash table to hold the new data
   Node** tempHashTable = new Node*[newSize];
 
+//resets the new hash table
   for(int i = 0; i < newSize; i++)
     {
       tempHashTable[i] = nullptr;
     }
-
+//checks the amount of students to make sure there are as much as started
   int amountOfStudents = 0;
-  
+
+//goes through the old hashtable
   for(int i = 0; i < oldSize; i++)
     {
 	  Node* st = hashTable[i];
-  
+  //puts the students into the new hashtable by rehashing them with the new size
 	  while(st != nullptr)
 	    {
 	      amountOfStudents++;
+		    //hashes the student
 	      int hash = sg.hashStudent(st->getStudent(), newSize);
-   
+
+	//this adds it to the new table
               if(tempHashTable[hash] == nullptr)
                 {
                   tempHashTable[hash] = st;
@@ -202,7 +214,7 @@ Node** reorganizeHashTable(Node** hashTable, StudentGenerator sg, int oldSize, i
                 {
                   addNode(tempHashTable[hash], st);
 		}
- 
+ //moves to the next node
 	      Node* tempSt = st;
 	      st = st->getNext();
 	      tempSt->setNext(nullptr);
@@ -222,6 +234,7 @@ int main()
   hashTable = new Node*[100];
   int hashTableMax = 100;
 
+//clears hashtable
   for(int i = 0; i < hashTableMax; i++)
     {
       hashTable[i] = nullptr;
@@ -263,7 +276,7 @@ int main()
 		}
 	    }
 
-	  
+	  //checks if should reorganize
 	  while(checkIfShouldReorganize(hashTable, hashTableMax))
 	    {
 	      hashTable = reorganizeHashTable(hashTable, sg, hashTableMax, hashTableMax*2);
@@ -272,6 +285,7 @@ int main()
 	}//Checks if it should print the students
       else if(strncmp(input, "PRINT", 5) == 0)
 	{
+		//goes through all hashes and prints
 	  for(int i = 0; i < hashTableMax; i++)
 	    {
 	      cout << "hash: " << i << endl;
