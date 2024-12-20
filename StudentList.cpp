@@ -14,6 +14,37 @@ using namespace std;
 using namespace LinkedList;
 using namespace StudentTools;
 
+Student* makeStudent()
+{
+  //variables for the student
+  char firstName[10] = {};
+  char lastName[10] = {};
+  float GPA = 0;
+  int id = 0;
+
+  //gets the students info
+          cout << "Enter Student First Name\n";
+          cin >> firstName;
+	  cout << "Enter Student Last Name\n";
+          cin >> lastName;
+          cout << "Enter GPA\n";
+          cin >> GPA;
+          cout << "Enter ID\n";
+          cin >> id;
+
+	  //creates the new students
+          Student* newStudent = new Student();
+
+	  //copies all of the info into the student
+          strcpy(newStudent->firstName, firstName);
+	  strcpy(newStudent->lastName, lastName);
+	  
+          newStudent->GPA = GPA;
+          newStudent->id = id;
+	  
+	  return newStudent;
+}
+
 //this prints all of the students in the list
 void printNames(Node* head)
 {
@@ -254,28 +285,48 @@ int main()
       //Checks if it is adding a student
       if(strncmp(input, "ADD", 3) == 0)
 	{
-	  int amountOfStudents = 0;
-
-	  cout << "How many would you like to add: \n";
-	  cin >> amountOfStudents;
-	  
-	  RandomStudents* rs = sg.makeStudents(amountOfStudents);
-	  for(int i = 0; i < amountOfStudents; i++)
+	  int addingInput = 0;
+	  cout << "Press 1 for adding random or 2 for adding specific" << endl;
+	  cin >> addingInput;
+	  if(addingInput == 1)
 	    {
-	      Node* st = rs->nodes[i];
+	      int amountOfStudents = 0;
 
-	      //adds the student that was made to the linkedList
-	      int hash = sg.hashStudent(st->getStudent(), hashTableMax);
-	      if(hashTable[hash] == nullptr)
+	      cout << "How many would you like to add: \n";
+	      cin >> amountOfStudents;
+	  
+	      RandomStudents* rs = sg.makeStudents(amountOfStudents);
+	      for(int i = 0; i < amountOfStudents; i++)
 		{
-		  hashTable[hash] = st;
-		}
-	      else
-		{
-		  addNode(hashTable[hash], st);
+		  Node* st = rs->nodes[i];
+
+		  //adds the student that was made to the linkedList
+		  int hash = sg.hashStudent(st->getStudent(), hashTableMax);
+		  if(hashTable[hash] == nullptr)
+		    {
+		      hashTable[hash] = st;
+		    }
+		  else
+		    {
+		      addNode(hashTable[hash], st);
+		    }
 		}
 	    }
+	  else
+	    {
+	      Node* st = new Node(makeStudent());
+	      int hash = sg.hashStudent(st->getStudent(), hashTableMax);
 
+	      if(hashTable[hash] == nullptr)
+                {
+                  hashTable[hash] = st;
+                }
+              else
+                {
+                  addNode(hashTable[hash], st);
+                }
+
+	    }
 	  //checks if should reorganize
 	  while(checkIfShouldReorganize(hashTable, hashTableMax))
 	    {
