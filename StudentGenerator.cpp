@@ -79,24 +79,6 @@ StudentGenerator::StudentGenerator()
                  }
              }
 	 }
-//this outputs the names initially so you can see them all
-  for(int i = 0; i < 20; i++)
-      {
-        for(int j = 0; j < 20; j++)
-          {
-            cout << StudentGenerator::firstNames[i][j];
-          }
-        cout << endl;
-      }
-for(int i = 0; i < 20; i++)
-      {
-        for(int j = 0; j < 20; j++)
-          {
-            cout << StudentGenerator::lastNames[i][j];
-          }
-        cout << endl;
-      }
-
 }
 
 //this makes random students
