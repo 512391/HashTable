@@ -17,8 +17,8 @@ using namespace StudentTools;
 Student* makeStudent()
 {
   //variables for the student
-  char firstName[10] = {};
-  char lastName[10] = {};
+  char* firstName = new char[21];
+  char* lastName = new char[21];
   float GPA = 0;
   int id = 0;
 
@@ -35,6 +35,8 @@ Student* makeStudent()
 	  //creates the new students
           Student* newStudent = new Student();
 
+	  newStudent->firstNameLength = strlen(firstName);
+	  
 	  //copies all of the info into the student
           strcpy(newStudent->firstName, firstName);
 	  strcpy(newStudent->lastName, lastName);
@@ -67,8 +69,9 @@ void printNames(Node* head)
     {
       cout << currentStudent->firstName[i];
     }
+
   cout << endl;
- 
+  
   cout << "Last name: " << currentStudent->lastName << endl;
 
   //checks if it should get the next student if there is one
